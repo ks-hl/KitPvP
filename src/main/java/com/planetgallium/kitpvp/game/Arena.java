@@ -153,13 +153,13 @@ public class Arena {
 	}
 
 	public void toSpawn(Player p, String arenaName) {
-		if (config.contains("Arenas." + arenaName)) {
-			p.teleport(Toolkit.getLocationFromResource(config,
-					"Arenas." + arenaName + "." + generateRandomArenaSpawn(arenaName)));
-		} else {
-			p.sendMessage(resources.getMessages().fetchString("Messages.Error.Arena")
-					.replace("%arena%", arenaName));
-		}
+//		if (config.contains("Arenas." + arenaName)) {
+//			p.teleport(Toolkit.getLocationFromResource(config,
+//					"Arenas." + arenaName + "." + generateRandomArenaSpawn(arenaName)));
+//		} else {
+//			p.sendMessage(resources.getMessages().fetchString("Messages.Error.Arena")
+//					.replace("%arena%", arenaName));
+//		}
 	}
 	
 	public void updateScoreboards(Player p, boolean hide) {
