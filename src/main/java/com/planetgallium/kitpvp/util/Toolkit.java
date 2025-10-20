@@ -145,6 +145,8 @@ public class Toolkit {
 			return 119;
 		} else if (version.contains("1.20")) {
 			return 120;
+		} else if (version.contains("1.21")) {
+			return 121;
 		}
  		return 500;
  	}
@@ -335,6 +337,7 @@ public class Toolkit {
 	}
 
 	public static Material safeMaterial(String materialName) {
+		// 1. Use XMaterial first
 		Optional<XMaterial> materialOptional = XMaterial.matchXMaterial(materialName);
 		if (materialOptional.isPresent()) {
 			Material material = materialOptional.get().parseMaterial();
@@ -342,7 +345,16 @@ public class Toolkit {
 				return material;
 			}
 		}
-		printToConsole("&7[&b&lKIT-PVP&7] &cInvalid material: " + materialName);
+
+		// 2. XMaterial fails, try native check before returning fallbackMaterial (forward-compatible)
+		Material potentialNativeMaterial = Material.getMaterial(materialName);
+		if (potentialNativeMaterial != null) {
+			return potentialNativeMaterial;
+		}
+
+		// 3. Native check fails; return fallbackMaterial
+		printToConsole(String.format("&7[&b&lKIT-PVP&7] &cUnknown material [%s], defaulting to [%s].",
+				materialName, FALLBACK_MATERIAL));
 		return FALLBACK_MATERIAL;
 	}
 
@@ -495,6 +507,17 @@ public class Toolkit {
 			}
 		}
 
+	}
+
+	public static int parsePotionEffectDuration(int duration) {
+		int durationInTicks = duration * 20;
+
+		if (duration == -1) { // if you put -1 in any version it makes it infinite
+			boolean useNegativeOneVersion = Bukkit.getVersion().contains("1.19.4") || Toolkit.versionToNumber() >= 120;
+			return useNegativeOneVersion ? -1 : Integer.MAX_VALUE;
+		}
+
+		return durationInTicks;
 	}
 
 }
